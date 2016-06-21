@@ -1,2 +1,12 @@
 *.png
 *.png
+/heatmap.py
+/heatmap_hamming.py
+/preparedata.py
+/scipyclustertutorial.py
+/scipykhobwa.py
+/simtest.py
+/simulation.py
+/simulation_hamming.py
+/simulation_withcogperc.py
+/testmethods.py
