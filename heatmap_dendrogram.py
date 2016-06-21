@@ -1,10 +1,9 @@
 #!/usr/bin/python
 '''
 ***DRAFT***
-Runs with Python 3
 Script reading from a csv spread sheet with cognacy judgements (1), computes the hamming distance/similarity matrix (2)
 and creates two plots using the seaborn, pandas and numpy modules (3). Finally a simulation with slightly disturbed data
-is performed (4).
+is performed (4). Runs with Python 3.
 '''
 
 #Define directory of the spreadsheet and number of simulations
