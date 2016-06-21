@@ -8,10 +8,10 @@ is performed (4).
 #Define directory of the spreadsheet and number of simulations
 spreadsheet_directory = '~/Downloads/'
 spreadsheet_name = 'KhoBwa_LeipzipJakarta - Data.csv'
-number_of_simulations = 1
+number_of_simulations = 1       #depending on the hardware 100 simulations can take several minutes
 
-
-import time
+#import modules
+import time #not really necessary, just for tracking time
 import pandas as pd
 import numpy as np
 import seaborn as sns
@@ -41,7 +41,7 @@ e.g. "NA", "n.a.", "" etc.
 Ok now we are on the shit branch. The first step is to read the data, extract the cognacy statement and make the missing data uniform, transpose to a nxp multivariate data matrix.
 In our case the matrix has the dimensions 29x100, where n = 29 is the number of 
 doculects, and p = 100 is the number of items in the adjusted Leipzig-Jakarta list. 
-Looking something like the following bla bla:
+Looking something like the following:
 
 ___________________________________________
 |Doculect\Gloss |HAND |WATER |...|GLOSS100|
@@ -99,7 +99,11 @@ d(Doculect1, Doculect2) = 1 (only gloss3 is different)
 d(Doculect2, Doculect3) = 2 (gloss1 and gloss3 are different)
 d(Doculect1, Doculect3) = 3 (gloss1, gloss2 and gloss3 are different)
 
-The percentages of different glosses (Hamming distance) would be 1/4, 2/4 and 3/4 and the cognacy percentage between the three fictive doculects would be 75% ((1-0.25)*100), 50% and 25%. However here missing data was counted in the same way as non-cognate forms which is not a sensible approach. It is more appropriate to ommit all pairs with missing data. The distances become 1/2, 3/3 and 2/3, and the cognacy percentages 50%, 0% and 33%. I.e. the percentage is computed on basis of the available words, and not on basis of the whole data, which is more realistic.
+The percentages of different glosses (Hamming distance) would be 1/4, 2/4 and 3/4 and the cognacy percentage between 
+the three fictive doculects would be 75% ((1-0.25)*100), 50% and 25%. However here missing data was counted in the same way 
+as non-cognate forms which is not a sensible approach. It is more appropriate to ommit all pairs with missing data. 
+The distances become 1/2, 3/3 and 2/3, and the cognacy percentages 50%, 0% and 33%. I.e. the percentage is computed 
+on basis of the available words, and not on basis of the whole data, which is more realistic.
 '''
 ######################################################################
 
@@ -146,7 +150,8 @@ Hierarchical clusteranalysis with unrounded similarity  matrix.
 
 def plot_heatmap_with_dendrogram(similarity_matrix, plot_name):
     '''
-    Makes a plot of heatmap and dendrogram. Arguments are a similarity matrix (as Pandas data frame) and the name of the plot. 
+    Makes a plot of heatmap and dendrogram. Arguments are a similarity matrix (as Pandas data frame) 
+    and the name of the plot. 
     '''
     #the distance matrix has to be condensed first
     cond_dist_matrix = pdist.squareform(100 - similarity_matrix)
