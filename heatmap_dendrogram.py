@@ -220,5 +220,5 @@ def simulate(data_set, no_sim, distr, variation, mean, out_directory, pltname):
 
 
 start_time = time.time()
-simulate(pairwise_cognacy, number_of_simulations, 'uniform', 20, 0, 'simulation_uni20/', 'simulation_uni20')
+simulate(pairwise_cognacy, number_of_simulations, 'uniform', 20, 0, 'simulation/', 'simulation_uni20')
 print("--- %s seconds ---" % (time.time() - start_time))
