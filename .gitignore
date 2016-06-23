@@ -1,5 +1,3 @@
-*.png
-*.png
 /heatmap.py
 /heatmap_hamming.py
 /preparedata.py
