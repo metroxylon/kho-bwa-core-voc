@@ -1,17 +1,22 @@
+#!/usr/bin/python3
 '''
 ***DRAFT***
-Script reading from a csv spread sheet with cognacy judgements (1), computes the hamming distance/similarity matrix (2)
-and creates two plots using the seaborn, pandas and numpy modules (3). Finally a simulation with slightly disturbed data
-is performed (4). Runs with Python 3.
+This script contains the computing done for the paper “Kho-Bwa: A lexico-statistical study” to appear in 2017. The author of the script is not a programmer. Suggestions for improvement are welcome.
+***
+Script...
+(1) reads from a csv spread sheet with cognacy judgements
+(2) computes the hamming distance/similarity matrix
+(3) creates two plots using the seaborn, pandas and numpy modules
+(4) performs simulations with slightly disturbed data. 
+Runs with Python 3.
 '''
-#!/usr/bin/python3
 #Define directory of the spreadsheet and number of simulations
 spreadsheet_directory = '~/Downloads/'
 spreadsheet_name = 'KhoBwa_LeipzipJakarta - Data.csv'
 number_of_simulations = 1       #depending on the hardware 100 simulations can take several minutes
 
 #import modules
-import time #not really necessary, just for tracking time bla
+import time #not really necessary, just for tracking time
 import pandas as pd
 import numpy as np
 import seaborn as sns
