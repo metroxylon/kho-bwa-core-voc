@@ -4,7 +4,7 @@ Script reading from a csv spread sheet with cognacy judgements (1), computes the
 and creates two plots using the seaborn, pandas and numpy modules (3). Finally a simulation with slightly disturbed data
 is performed (4). Runs with Python 3.
 '''
-#!/usr/bin/python
+#!/usr/bin/python3
 #Define directory of the spreadsheet and number of simulations
 spreadsheet_directory = '~/Downloads/'
 spreadsheet_name = 'KhoBwa_LeipzipJakarta - Data.csv'
