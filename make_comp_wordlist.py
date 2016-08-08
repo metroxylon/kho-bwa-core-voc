@@ -9,11 +9,11 @@ import re
 kb = pd.read_csv('~/Downloads/KhoBwa_LeipzipJakarta - Data.csv')
 kb = kb.iloc[:200,]
 
-kbchar = kb.iloc[1::2,1:]#odd rows
-kbword = kb.iloc[::2,1:]#even rows
+kbchar = kb.iloc[1::2,]#odd rows
+kbword = kb.iloc[::2,]#even rows
 kbchar = kbchar.fillna(0)
 colnames = list(kbchar.columns.values)
-abbreviations = ['xxx', 'dh', 'kp', 'rp', 'shg', 'rh', 'kt', 'jg', 'kn', 'dk', 'sc', 'wh', 'bc', 'kap', 'np', 'b', 'kr', 'rw', 'sr', 'sc', 'lp', 'zm', 'ld', 'tsb', 'bm', 'wt', 'pt', 'pbg', 'ph', 'pkc']
+abbreviations = ['dh', 'kp', 'rp', 'shg', 'rh', 'kt', 'jg', 'kn', 'dk', 'sc', 'wh', 'bc', 'kap', 'np', 'b', 'kr', 'rw', 'sr', 'sc', 'lp', 'zm', 'ld', 'tsb', 'bm', 'wt', 'pt', 'pbg', 'ph', 'pkc']
 colnum = len(colnames)
 
 def uniform ( oldchars ):
@@ -39,30 +39,38 @@ def uniform ( oldchars ):
 
 
 
+
 out = open("../data/wordlistcolumns.tex",'w', encoding="utf-8")
 out.write('%!TEX root = ../main.tex\n')
 out.write("[Word list created on: " + time.strftime("%c") + "]\\\\\n")
 out.write('\\footnotesize\n')
 out.write('\\begin{multicols}{3}\n')
 out.write('\\noindent')
-for wordrow, charrow in zip(kbword.values,kbchar.values):     
-         for word, character, abbr in zip(wordrow,charrow,abbreviations):
-            if character == 'cognacy':
-                out.write('\\textbf{\\textsc{' + word + '}}\\\\\n')
+for wordrow, charrow in zip(kbword.values,kbchar.values):
+         wordlists = charrow[0]
+         if wordlists == 'L':
+             wl = 'LJ'
+         elif wordlists == 'S':
+             wl = 'S100'
+         elif wordlists == 'LS' or wordlists == 'SL':
+             wl = 'LJ, S100'
+         else:
+             wl = 'NA'
+         word = wordrow[1].strip()
+         out.write('\\textbf{\\textsc{' + word + '}}\\hfill [' + wl + ']\\\\\n')
+         for word, character, abbr in zip(wordrow[2::], charrow[2::], abbreviations):
+            out.write("\\enskip\\textbf{"+abbr+"}\\tabto{0.5cm}")
+            out.write("\\colorbox{rb")
+            if character != 0 and word != 'NA' and character != ' ':
+                out.write(str(character))
             else:
-                out.write("\\enskip\\textbf{"+abbr+"}\\tabto{0.5cm}")
-                #out.write("\\colorbox{rb"+ str(character) + '}{\\makebox[3cm]{')
-                out.write("\\colorbox{rb")
-                if character != 0 and word != 'NA' and character != ' ':
-                    out.write(str(character))
-                else:
-                    out.write('0')
-                out.write('}{\\begin{minipage}{3cm}')
-                out.write(uniform(str(word)))
-                out.write("\\end{minipage}}")
-                if character is not 0:
-                    out.write("\\tabto{4cm}("+ str(character) + ")")
-                out.write("\\\\\n")    
+                out.write('0')
+            out.write('}{\\begin{minipage}{3cm}')
+            out.write(uniform(str(word)))
+            out.write("\\end{minipage}}")
+            if character is not 0:
+                out.write("\\tabto{4cm}("+ str(character) + ")")
+            out.write("\\\\\n")    
          out.write('\\\\\n')
 out.write('\\end{multicols}\n')        
 out.close()
