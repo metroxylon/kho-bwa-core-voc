@@ -13,7 +13,7 @@ Runs with Python 3.
 #Define directory of the spreadsheet and number of simulations
 spreadsheet_directory = '~/Downloads/'
 spreadsheet_name = 'KhoBwa_LeipzipJakarta - Data.csv'
-number_of_simulations = 1       #depending on the hardware 100 simulations can take several minutes
+number_of_simulations = 1       #100 simulations can take several minutes
 
 #import modules
 import time #not really necessary, just for tracking time
@@ -170,8 +170,8 @@ def plot_heatmap_with_dendrogram(similarity_matrix, plot_name):
     plt.savefig(plot_name + ".png")
 
 #make two plots: one for the Kho-Bwa languages only, and one for all languages
-plot_heatmap_with_dendrogram(pairwise_cognacy, 'tbkhobwa')
-plot_heatmap_with_dendrogram(pairwise_cognacy.iloc[:21,:21],'khobwa')
+plot_heatmap_with_dendrogram(pairwise_cognacy, 'plots/tbkhobwa')
+plot_heatmap_with_dendrogram(pairwise_cognacy.iloc[:21,:21],'plots/khobwa')
 
 ######################################################################
 #(4) Simulation
@@ -198,7 +198,7 @@ def create_random_matrix(distr, mean, spread, dim):
     return random_matrix   
     
 
-#Kho-Bwa with random variation (looks obiously different every time produced)
+#Kho-Bwa with random variation (looks naturally different every time produced)
 def simulate(data_set, no_sim, distr, spread, mean, out_directory, pltname):
     """
     Function to run the simulation.
@@ -225,5 +225,5 @@ def simulate(data_set, no_sim, distr, spread, mean, out_directory, pltname):
 
 
 start_time = time.time()
-simulate(pairwise_cognacy, number_of_simulations, 'uniform', 20, 0, 'simulation/', 'simulation_uni20')
+simulate(pairwise_cognacy, number_of_simulations, 'uniform', 20, 0, 'simulations/', 'simulation_uni20')
 print("--- %s seconds ---" % (time.time() - start_time))
