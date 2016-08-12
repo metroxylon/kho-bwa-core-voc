@@ -90,7 +90,7 @@ def make_datamatrix_from_spreadsheet(spreadsheet_dir, spreadsheet_nm):
     cognacy_matrix.index = row_names
     # has to be converted to numbers otherwise everything is string, and even
     # errors coerce make invalid parsing into NaN
-    cognacy_matrix = cognacy_matrix.convert_objects(convert_numeric=True).T
+    cognacy_matrix = cognacy_matrix.apply(pd.to_numeric, errors='coerce').T
     return cognacy_matrix
 
 cognacy_matrix = make_datamatrix_from_spreadsheet(
