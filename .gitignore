@@ -2,3 +2,6 @@
 .gitignore
 khobwa.png
 tbkhobwa.png
+
+/*.egg-info/
+/__pycache__/

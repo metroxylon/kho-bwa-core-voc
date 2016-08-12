@@ -1,4 +1,3 @@
-#!/usr/bin/python3
 """
 ***DRAFT***
 This script contains the computing done for the paper “Kho-Bwa: A
@@ -22,11 +21,7 @@ import matplotlib.pyplot as plt
 # import scipy
 from scipy.cluster.hierarchy import dendrogram, linkage, fcluster
 import scipy.spatial.distance as pdist
-
-# Define directory of the spreadsheet and number of simulations
-spreadsheet_directory = '~/Downloads/'
-spreadsheet_name = 'KhoBwa_LeipzipJakarta - Data.csv'
-number_of_simulations = 1  # 100 simulations can take several minutes
+import click
 
 
 ######################################################################
@@ -70,13 +65,13 @@ ___________________________________________
 ######################################################################
 
 
-def make_datamatrix_from_spreadsheet(spreadsheet_dir, spreadsheet_nm):
+def make_datamatrix_from_spreadsheet(infile):
     """
     Takes as imput the google spreadsheet downloaded as csv. Returns a data
     matrix as rows.
     """
     # import data as pandas data frame
-    spreadsheet = pd.read_csv(spreadsheet_directory + spreadsheet_name)
+    spreadsheet = pd.read_csv(infile)
     # read only the first 200 lines with the actual data
     spreadsheet = spreadsheet[:200]
 
@@ -92,9 +87,6 @@ def make_datamatrix_from_spreadsheet(spreadsheet_dir, spreadsheet_nm):
     # errors coerce make invalid parsing into NaN
     cognacy_matrix = cognacy_matrix.apply(pd.to_numeric, errors='coerce').T
     return cognacy_matrix
-
-cognacy_matrix = make_datamatrix_from_spreadsheet(
-        spreadsheet_directory, spreadsheet_name)
 
 ######################################################################
 # (2) Compute distance/similarity  matrix
@@ -165,10 +157,6 @@ def hamming_similarity(data_mat):
             num_cog/num_comp, index=data_mat.index, columns=data_mat.index)
     return similarity_matrix
 
-# this is a matrix with pairwise cognates
-pairwise_cognacy = hamming_similarity(cognacy_matrix) * 100
-
-
 ######################################################################
 # (3) Perform cluster analysis and plot data
 """
@@ -199,11 +187,10 @@ def plot_heatmap_with_dendrogram(similarity_matrix, plot_name):
             vmax=100, fmt='d', col_linkage=Z, row_linkage=Z)
     plt.setp(heatncluster.ax_heatmap.yaxis.get_majorticklabels(), rotation=0)
     plt.setp(heatncluster.ax_heatmap.xaxis.get_majorticklabels(), rotation=45)
-    plt.savefig(plot_name + '.png')
 
-# make two plots: one for the Kho-Bwa languages only, and one for all languages
-plot_heatmap_with_dendrogram(pairwise_cognacy, 'plots/tbkhobwa')
-plot_heatmap_with_dendrogram(pairwise_cognacy.iloc[:21, :21], 'plots/khobwa')
+    file_name = plot_name + '.png'
+    click.echo('Writing ' + file_name, err=True)
+    plt.savefig(file_name)
 
 ######################################################################
 # (4) Simulation
@@ -239,7 +226,8 @@ def create_random_matrix(distr, mean, spread, dim):
 
 
 # Kho-Bwa with random variation (looks naturally different every time produced)
-def simulate(data_set, no_sim, distr, spread, mean, out_directory, pltname):
+def simulate_random_variation(
+        data_set, no_sim, distr, spread, mean, out_directory, pltname):
     """
     Function to run the simulation.
     data_set: nxn data set with cognacy percentages
@@ -262,11 +250,65 @@ def simulate(data_set, no_sim, distr, spread, mean, out_directory, pltname):
         # itself)
         data_plus_random_matrix.values[[np.arange(dim[0])] * 2] = 100
         # name of plot
-        ploti = out_directory + pltname + '_' + str(i + 1)
+        ploti = out_directory + '/' + pltname + '_' + str(i + 1)
         plot_heatmap_with_dendrogram(data_plus_random_matrix, ploti)
 
 
-start_time = time.time()
-simulate(pairwise_cognacy, number_of_simulations, 'uniform', 20, 0,
-         'simulations/', 'simulation_uni20')
-print('--- %s seconds ---' % (time.time() - start_time))
+def calculate_pairwise_cognacy(infile):
+    cognacy_matrix = make_datamatrix_from_spreadsheet(infile)
+
+    # this is a matrix with pairwise cognates
+    return hamming_similarity(cognacy_matrix) * 100
+
+
+@click.group()
+def cli():
+    """Tool for plotting data as heatmap and dendrogram."""
+
+
+@cli.command()
+@click.option('--outdir', type=click.Path(exists=True), default='plots',
+              help='Output directory.')
+@click.argument('infile', type=click.Path(exists=True))
+def plot(outdir, infile):
+    """Create heatmap and dendrogram plots.
+
+    Produce two heatmap and dendrogram plots for the given data, one for the
+    Kho-Bwa languages only and one for all languages. By default, output is
+    written to the directory "plots" in the current directory.
+    """
+    pairwise_cognacy = calculate_pairwise_cognacy(infile)
+
+    # make two plots: one for the Kho-Bwa languages only, and one for all
+    # languages
+    plot_heatmap_with_dendrogram(pairwise_cognacy, outdir + '/tbkhobwa')
+    plot_heatmap_with_dendrogram(
+            pairwise_cognacy.iloc[:21, :21], outdir + '/khobwa')
+
+
+@cli.command()
+@click.option('--outdir', type=click.Path(exists=True), default='simulations',
+              help='Output directory.')
+@click.option('--count', default=1, help='Number of simulations to run.')
+@click.option('--distr', type=click.Choice(['uniform', 'binomial']),
+              default='uniform', help='Probability distribution.')
+@click.option('--spread', default=20, help='Maximum spread around value.')
+@click.option('--mean', default=0, help='Deviation from value.')
+@click.argument('infile', type=click.Path(exists=True))
+def simulate(outdir, count, distr, spread, mean, infile):
+    """Create plots simulating random variation.
+
+    Produce heatmap and dendrogram plots (default: 1) for the given data, while
+    introducing random variation. By default, output is written to the
+    directory "simulations" in the current directory, and simulations are
+    parameterized with spread 20, mean 0, and uniform probability distribution.
+
+    Note that 100 simulations can take several minutes to complete.
+    """
+    pairwise_cognacy = calculate_pairwise_cognacy(infile)
+
+    start_time = time.time()
+    simulate_random_variation(
+            pairwise_cognacy, count, distr, spread, mean, outdir,
+            'simulation_{}_{}'.format(distr, spread))
+    click.echo('--- {} seconds ---'.format(time.time() - start_time), err=True)
