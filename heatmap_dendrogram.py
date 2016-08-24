@@ -74,14 +74,13 @@ def make_datamatrix_from_spreadsheet(infile):
     spreadsheet = pd.read_csv(infile)
     # read only the first 200 lines with the actual data
     spreadsheet = spreadsheet[:200]
-
+    # drop all empty columns
+    spreadsheet=spreadsheet.dropna(axis=1,how='all')
     # the first column contains the row names
     row_names = spreadsheet.iloc[0:200:2, 1]
     # extract only the odd rows which contain the actual cognacy statement
-    cognacy_matrix = spreadsheet.iloc[1:200:2, 2:32]
-
+    cognacy_matrix = spreadsheet.iloc[1:200:2, 2:31]
     # exclude an empty column between tb data and khobwa data
-    cognacy_matrix.drop(cognacy_matrix.columns[[22]], axis=1, inplace=True)
     cognacy_matrix.index = row_names
     # has to be converted to numbers otherwise everything is string, and even
     # errors coerce make invalid parsing into NaN
@@ -263,7 +262,7 @@ def calculate_pairwise_cognacy(infile):
 
 @click.group()
 def cli():
-    """Tool for plotting data as heatmap and dendrogram."""
+    """Tool for plotting data as heatmap and dendrogram. Compiled """
 
 
 @cli.command()
