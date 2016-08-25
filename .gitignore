@@ -2,8 +2,8 @@
 .gitignore
 khobwa.png
 tbkhobwa.png
-simulation*
 
 /*.egg-info/
 /__pycache__/
 
+/.DS_Store
