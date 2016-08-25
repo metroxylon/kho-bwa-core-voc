@@ -165,7 +165,7 @@ preimplemented scipy algorithm was used, which is explained in the paper.
 ######################################################################
 
 
-def plot_heatmap_with_dendrogram(similarity_matrix, plot_name):
+def plot_heatmap_with_dendrogram(similarity_matrix, plot_name, show_link):
     """
     Makes a plot of heatmap and dendrogram. Arguments are a similarity matrix
     (as Pandas data frame) and the name of the plot.
@@ -175,7 +175,8 @@ def plot_heatmap_with_dendrogram(similarity_matrix, plot_name):
     # linkage makes the whole mathematics
     Z = linkage(cond_dist_matrix, 'average')
     # uncomment the print statement to see the linkage matrix
-    # print(Z)
+    if show_link:
+        print(Z)
     sns.set(font='sans-serif', font_scale=0.7)
     # round the figures displayed in the heatmap as to integers
     pairwise_cognacy_displayinheatmap = np.round(
@@ -262,39 +263,71 @@ def calculate_pairwise_cognacy(infile):
 
 @click.group()
 def cli():
-    """Tool for plotting data as heatmap and dendrogram. Compiled """
+    """Tool for plotting a comparative word list as heatmap and dendrogram. 
+
+   Input is a csv file containing rows with language data and a cognacy statement, whether two lexemes are cognate or not.
+
+   _______________________________________________________
+
+   |# | Gloss\Doculect|Duhumbi |Khispi |Rupa |Shergaon |...
+
+   |--+---------------+--------+-------+-----+---------|... 
+
+   |2 |HAND           |hut     |hut    |ʔik  |ʔik      |....
+ 
+   |  |cognacy        |1       |1      |2    |2        |.... 
+
+   |--+---------------|--------+-------+-----+---------+....
+
+   |. |....
+
+   |. |...
+
+   Works by default for a word list with 100 lexemes in 29 languages, but can easily be adjusted for other data sets.
+    
+    """
 
 
 @cli.command()
 @click.option('--outdir', type=click.Path(exists=True), default='plots',
-              help='Output directory.')
+              help='Output directory (Default plots).')
+@click.option('--plot_all', default='tbkhobwa',
+              help='Name of plot of whole data (Default tbkhobwa).')
+@click.option('--plot_part', default='khobwa',
+              help='Name of plot of first x columns (Default khobwa).')
+@click.option('--part_range', default=22, help='The first x columns (Default 22).')
+@click.option('--linkage/--no-linkage', 
+              default=False, help='Show linkage matrix (Default --no-linkage)')
 @click.argument('infile', type=click.Path(exists=True))
-def plot(outdir, infile):
+def plot(outdir, infile, outfile_all, outfile_part, part_range, linkage):
     """Create heatmap and dendrogram plots.
 
     Produce two heatmap and dendrogram plots for the given data, one for the
-    Kho-Bwa languages only and one for all languages. By default, output is
-    written to the directory "plots" in the current directory.
+    Kho-Bwa languages only (first 22 data columns) and one including languages from other Tibeto-Burman groups. 
+    By default, output is written to the directory "plots" in the current directory. 
+    The names of the plots are by default "khobwa.png" and "tbkhobwa.png". The linkage matrix is not shown by default.
     """
     pairwise_cognacy = calculate_pairwise_cognacy(infile)
 
     # make two plots: one for the Kho-Bwa languages only, and one for all
     # languages
-    plot_heatmap_with_dendrogram(pairwise_cognacy, outdir + '/tbkhobwa')
+    plot_heatmap_with_dendrogram(pairwise_cognacy, outdir + '/' + plot_all, linkage)
     plot_heatmap_with_dendrogram(
-            pairwise_cognacy.iloc[:21, :21], outdir + '/khobwa')
+            pairwise_cognacy.iloc[:part_range, :part_range], outdir + '/' + plot_part, linkage)
 
 
 @cli.command()
 @click.option('--outdir', type=click.Path(exists=True), default='simulations',
-              help='Output directory.')
+              help='Output directory (Default simulations).')
 @click.option('--count', default=1, help='Number of simulations to run.')
 @click.option('--distr', type=click.Choice(['uniform', 'binomial']),
               default='uniform', help='Probability distribution.')
 @click.option('--spread', default=20, help='Maximum spread around value.')
 @click.option('--mean', default=0, help='Deviation from value.')
+@click.option('--linkage/--no-linkage', 
+              default=False, help='Show linkage matrix (Default --no-linkage)')
 @click.argument('infile', type=click.Path(exists=True))
-def simulate(outdir, count, distr, spread, mean, infile):
+def simulate(outdir, count, distr, spread, mean, infile, linkage):
     """Create plots simulating random variation.
 
     Produce heatmap and dendrogram plots (default: 1) for the given data, while
@@ -309,5 +342,5 @@ def simulate(outdir, count, distr, spread, mean, infile):
     start_time = time.time()
     simulate_random_variation(
             pairwise_cognacy, count, distr, spread, mean, outdir,
-            'simulation_{}_{}'.format(distr, spread))
+            'simulation_{}_{}'.format(distr, spread), linkage)
     click.echo('--- {} seconds ---'.format(time.time() - start_time), err=True)
