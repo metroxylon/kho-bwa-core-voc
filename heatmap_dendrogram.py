@@ -227,7 +227,7 @@ def create_random_matrix(distr, mean, spread, dim):
 
 # Kho-Bwa with random variation (looks naturally different every time produced)
 def simulate_random_variation(
-        data_set, no_sim, distr, spread, mean, out_directory, pltname):
+        data_set, no_sim, distr, spread, mean, out_directory, pltname, linkage):
     """
     Function to run the simulation.
     data_set: nxn data set with cognacy percentages
@@ -251,7 +251,7 @@ def simulate_random_variation(
         data_plus_random_matrix.values[[np.arange(dim[0])] * 2] = 100
         # name of plot
         ploti = out_directory + '/' + pltname + '_' + str(i + 1)
-        plot_heatmap_with_dendrogram(data_plus_random_matrix, ploti)
+        plot_heatmap_with_dendrogram(data_plus_random_matrix, ploti, linkage)
 
 
 def calculate_pairwise_cognacy(infile):
@@ -298,8 +298,8 @@ def cli():
 @click.option('--part_range', default=22, help='The first x columns (Default 22).')
 @click.option('--linkage/--no-linkage', 
               default=False, help='Show linkage matrix (Default --no-linkage)')
-@click.argument('infile', type=click.Path(exists=True))
-def plot(outdir, infile, outfile_all, outfile_part, part_range, linkage):
+@click.argument('infile', type=click.Path(exists=True), default='data/dataset_khobwa.csv')
+def plot(outdir, infile, plot_all, plot_part, part_range, linkage):
     """Create heatmap and dendrogram plots.
 
     Produce two heatmap and dendrogram plots for the given data, one for the
@@ -313,7 +313,7 @@ def plot(outdir, infile, outfile_all, outfile_part, part_range, linkage):
     # languages
     plot_heatmap_with_dendrogram(pairwise_cognacy, outdir + '/' + plot_all, linkage)
     plot_heatmap_with_dendrogram(
-            pairwise_cognacy.iloc[:part_range, :part_range], outdir + '/' + plot_part, linkage)
+            pairwise_cognacy.iloc[:part_range, :part_range], outdir + '/' + plot_part, False)
 
 
 @cli.command()
@@ -324,9 +324,9 @@ def plot(outdir, infile, outfile_all, outfile_part, part_range, linkage):
               default='uniform', help='Probability distribution.')
 @click.option('--spread', default=20, help='Maximum spread around value.')
 @click.option('--mean', default=0, help='Deviation from value.')
-@click.option('--linkage/--no-linkage', 
+@click.option('--linkage/--no-linkage', d
               default=False, help='Show linkage matrix (Default --no-linkage)')
-@click.argument('infile', type=click.Path(exists=True))
+@click.argument('infile', type=click.Path(exists=True), default='data/dataset_khobwa.csv')
 def simulate(outdir, count, distr, spread, mean, infile, linkage):
     """Create plots simulating random variation.
 

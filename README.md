@@ -43,7 +43,7 @@ The script provides two subcommands, `plot` and `simulate`.
 ### `plot`
 
 `plot` produces the heatmap and dendrogram plots for a given data file (here,
-`data.csv` represents the path to the spreadsheet file with the language data):
+`data.csv` represents the path to the spreadsheet file with the language data, by default `data/dataset_khobwa.csv`):
 
     heatmap_dendrogram plot data.csv
 
