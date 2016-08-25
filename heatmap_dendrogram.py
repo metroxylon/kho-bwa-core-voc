@@ -75,7 +75,7 @@ def make_datamatrix_from_spreadsheet(infile):
     # read only the first 200 lines with the actual data
     spreadsheet = spreadsheet[:200]
     # drop all empty columns
-    spreadsheet=spreadsheet.dropna(axis=1,how='all')
+    spreadsheet = spreadsheet.dropna(axis=1, how='all')
     # the first column contains the row names
     row_names = spreadsheet.iloc[0:200:2, 1]
     # extract only the odd rows which contain the actual cognacy statement
@@ -226,8 +226,8 @@ def create_random_matrix(distr, mean, spread, dim):
 
 
 # Kho-Bwa with random variation (looks naturally different every time produced)
-def simulate_random_variation(
-        data_set, no_sim, distr, spread, mean, out_directory, pltname, linkage):
+def simulate_random_variation(data_set, no_sim, distr, spread,
+                              mean, out_directory, pltname, linkage):
     """
     Function to run the simulation.
     data_set: nxn data set with cognacy percentages
@@ -263,28 +263,30 @@ def calculate_pairwise_cognacy(infile):
 
 @click.group()
 def cli():
-    """Tool for plotting a comparative word list as heatmap and dendrogram. 
+    """ Tool for plotting a comparative word list as heatmap and
+        dendrogram.
 
-   Input is a csv file containing rows with language data and a cognacy statement, whether two lexemes are cognate or not.
+    Input is a csv file containing rows with the language data and
+    a cognacy statement, whether two lexemes are cognate or not.
 
-   _______________________________________________________
+    _______________________________________________________
 
-   |# | Gloss\Doculect|Duhumbi |Khispi |Rupa |Shergaon |...
+    |# | Gloss\Doculect|Duhumbi |Khispi |Rupa |Shergaon |...
 
-   |--+---------------+--------+-------+-----+---------|... 
+    |--+---------------+--------+-------+-----+---------|...
 
-   |2 |HAND           |hut     |hut    |ʔik  |ʔik      |....
- 
-   |  |cognacy        |1       |1      |2    |2        |.... 
+    |2 |HAND           |hut     |hut    |ʔik  |ʔik      |....
 
-   |--+---------------|--------+-------+-----+---------+....
+    |  |cognacy        |1       |1      |2    |2        |....
 
-   |. |....
+    |--+---------------|--------+-------+-----+---------+....
 
-   |. |...
+    |. |....
 
-   Works by default for a word list with 100 lexemes in 29 languages, but can easily be adjusted for other data sets.
-    
+    |. |...
+
+    Works by default for a word list with 100 lexemes in 29 languages,
+    but can be adjusted for other data sets.
     """
 
 
@@ -295,25 +297,32 @@ def cli():
               help='Name of plot of whole data (Default tbkhobwa).')
 @click.option('--plot_part', default='khobwa',
               help='Name of plot of first x columns (Default khobwa).')
-@click.option('--part_range', default=22, help='The first x columns (Default 22).')
-@click.option('--linkage/--no-linkage', 
+@click.option('--part_range', default=22,
+              help='The first x columns (Default 22).')
+@click.option('--linkage/--no-linkage',
               default=False, help='Show linkage matrix (Default --no-linkage)')
-@click.argument('infile', type=click.Path(exists=True), default='data/dataset_khobwa.csv')
+@click.argument('infile', type=click.Path(exists=True),
+                default='data/dataset_khobwa.csv')
 def plot(outdir, infile, plot_all, plot_part, part_range, linkage):
     """Create heatmap and dendrogram plots.
 
     Produce two heatmap and dendrogram plots for the given data, one for the
-    Kho-Bwa languages only (first 22 data columns) and one including languages from other Tibeto-Burman groups. 
-    By default, output is written to the directory "plots" in the current directory. 
-    The names of the plots are by default "khobwa.png" and "tbkhobwa.png". The linkage matrix is not shown by default.
+    Kho-Bwa languages only (first 22 data columns) and one including
+    languages from other Tibeto-Burman groups.
+    By default, output is written to the directory "plots" in the current
+    directory.
+    The names of the plots are by default "khobwa.png" and "tbkhobwa.png".
+    The linkage matrix is not shown by default.
     """
     pairwise_cognacy = calculate_pairwise_cognacy(infile)
 
-    # make two plots: one for the Kho-Bwa languages only, and one for all
-    # languages
-    plot_heatmap_with_dendrogram(pairwise_cognacy, outdir + '/' + plot_all, linkage)
-    plot_heatmap_with_dendrogram(
-            pairwise_cognacy.iloc[:part_range, :part_range], outdir + '/' + plot_part, False)
+    # make two plots: one for the Kho-Bwa languages only,
+    # and one for all languages
+    plot_heatmap_with_dendrogram(pairwise_cognacy,
+                                 outdir + '/' + plot_all, linkage)
+    plot_heatmap_with_dendrogram(pairwise_cognacy.iloc[:part_range,
+                                                       :part_range],
+                                 outdir + '/' + plot_part, False)
 
 
 @cli.command()
@@ -324,9 +333,10 @@ def plot(outdir, infile, plot_all, plot_part, part_range, linkage):
               default='uniform', help='Probability distribution.')
 @click.option('--spread', default=20, help='Maximum spread around value.')
 @click.option('--mean', default=0, help='Deviation from value.')
-@click.option('--linkage/--no-linkage', d
-              default=False, help='Show linkage matrix (Default --no-linkage)')
-@click.argument('infile', type=click.Path(exists=True), default='data/dataset_khobwa.csv')
+@click.option('--linkage/--no-linkage', default=False,
+              help='Show linkage matrix (Default --no-linkage)')
+@click.argument('infile', type=click.Path(exists=True),
+                default='data/dataset_khobwa.csv')
 def simulate(outdir, count, distr, spread, mean, infile, linkage):
     """Create plots simulating random variation.
 
