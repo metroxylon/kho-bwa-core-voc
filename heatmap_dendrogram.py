@@ -263,30 +263,29 @@ def calculate_pairwise_cognacy(infile):
 
 @click.group()
 def cli():
-    """ Tool for plotting a comparative word list as heatmap and
-        dendrogram.
+    """ Tool for plotting a comparative word list as heatmap and dendrogram.
 
     Input is a csv file containing rows with the language data and
     a cognacy statement, whether two lexemes are cognate or not.
 
-    _______________________________________________________
-
-    |# | Gloss         |Duhumbi |Khispi |Rupa |Shergaon |...
-
-    |--+---------------+--------+-------+-----+---------|-
-
-    |2 |HAND           |hut     |hut    |ʔik  |ʔik      |....
-
-    |  |cognacy        |1       |1      |2    |2        |....
-
-    |--+---------------|--------+-------+-----+---------+-
-
-    |. |....
-
-    |. |...
-
     Works by default for a word list with 100 lexemes in 29 languages,
     but can be adjusted for other data sets.
+    
+    Input csv (with header line) containing rows with the language data and
+    cognacy statement:
+
+    e.g.
+
+    #, Gloss, Duhumbi, Khispi, Rupa, Shergaon
+
+    1, 1SG  , ga     , ga    , gu  , gu
+
+     ,      , 1      , 1     , 1   , 1   
+   
+    2, HAND , hut    , hut   , ʔik , ʔik
+
+     ,      , 1      , 1     , 2   , 2       
+    
     """
 
 
@@ -306,12 +305,12 @@ def cli():
 def plot(outdir, infile, plot_all, plot_part, part_range, linkage):
     """Create heatmap and dendrogram plots.
 
-    Produce two heatmap and dendrogram plots for the given data, one for the
-    Kho-Bwa languages only (first 22 data columns) and one including
-    languages from other Tibeto-Burman groups.
+    Produce two heatmap and dendrogram plots for the given data, one for
+    the whole data set (Kho-Bwa and TB) and one only for a subset (by default
+    only Kho-Bwa).
     By default, output is written to the directory "plots" in the current
     directory.
-    The names of the plots are by default "khobwa.png" and "tbkhobwa.png".
+    The names of the plots are "khobwa.png" and "tbkhobwa.png" by default.
     The linkage matrix is not shown by default.
     """
     pairwise_cognacy = calculate_pairwise_cognacy(infile)

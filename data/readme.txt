@@ -1,0 +1,4 @@
+Will be available here once the paper “Kho-Bwa: A lexico-statistical study” is accepted for publication.
+
+If you have a data sheet with the required format, you can paste it in the file dataset_khobwa.csv, or give the path to the sheet as an agument of 
+“heatmap_dendrogram plot” or “heatmap_dendrogram simulate”.
