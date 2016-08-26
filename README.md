@@ -7,7 +7,7 @@ lexico-statistical study of Kho-Bwa languages.
 
 -   Python 3
 -   pip
--   the Kho-Bwa language data file (will be available in this directory once the paper is accepted for publication)
+-   the Kho-Bwa language data file (will be available in the “data” directory once the paper is accepted for publication)
 
 [pip][], the Python package management tool, comes bundled with Python 3.4 or
 newer. If you use an older version of Python 3, or use a Python distribution
