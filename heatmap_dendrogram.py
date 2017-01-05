@@ -28,11 +28,11 @@ import click
 # (1) Prepare spreadsheet data - convert to nxp matrix (dataframe)
 r"""
 The data used for this analysis we had entered into a Google spreadsheet having
-doculects as columns and glosses and our cognacy statement as rows. Roots which
+language as columns and glosses and our cognacy statement as rows. Roots which
 we consider as cognate have the same number. Example:
 
 ______________________________________________________
-| Gloss\Doculect|Duhumbi |Khispi |Rupa |Shergaon |...
+| Gloss\Language|Duhumbi |Khispi |Rupa |Shergaon |...
 |---------------+--------+-------+-----+---------|...
 |HAND           |hut     |hut    |ʔik  |ʔik      |....
 |cognacy        |1       |1      |2    |2        |....
@@ -45,12 +45,12 @@ integer e.g. "NA", "n.a.", "" etc.
 
 The first step is to read the data, extract the cognacy statement, transpose to
 a nxp multivariate data matrix. In our case the matrix has the dimensions
-29x100, where n = 29 is the number of doculects, and p = 100 is the number of
+29x100, where n = 29 is the number of languages, and p = 100 is the number of
 glosses in the adjusted Leipzig-Jakarta list. Looking something like the
 following table:
 
 ___________________________________________
-|Doculect\Gloss |HAND |WATER |...|GLOSS100|
+|Language\Gloss |HAND |WATER |...|GLOSS100|
 |---------------+-----+------+---+--------|
 |Duhumbi        |1    |1
 |Khispi         |1    |1
@@ -58,7 +58,7 @@ ___________________________________________
 |Shergaon       |2    |1
 |...            |.
 |...            |.
-|Doculect29     |.
+|Language29     |.
 |___________________________________
 
 """
@@ -91,26 +91,26 @@ def make_datamatrix_from_spreadsheet(infile):
 # (2) Compute distance/similarity  matrix
 """
 Every row in cognacy_matrix contains integers (cognacy statement) or "NaN"
-(missing data). As a measure for the distance between two doculects, we
+(missing data). As a measure for the distance between two languages, we
 implemented the Hamming metric. The Hamming metric counts the distance between
 two identical integers as 0 and between two not identical integers as 1. If one
 of the two is missing it is also counted as 0. For example if:
 
          | gloss1| gloss2| gloss3| gloss4|
 ---------+-------+-------+-------+-------|
-Doculect1|     1 |      1|      1| NaN   |
-Doculect2|     1 |    NaN|      2| 1     |
-Doculect3|     2 |     2 |      3| 1     |
+Language1|     1 |      1|      1| NaN   |
+Language2|     1 |    NaN|      2| 1     |
+Language3|     2 |     2 |      3| 1     |
 
 then:
 
-d(Doculect1, Doculect2) = 1 (only gloss3 is different)
-d(Doculect2, Doculect3) = 2 (gloss1 and gloss3 are different)
-d(Doculect1, Doculect3) = 3 (gloss1, gloss2 and gloss3 are different)
+d(Language1, Language2) = 1 (only gloss3 is different)
+d(Language2, Language3) = 2 (gloss1 and gloss3 are different)
+d(Language1, Language3) = 3 (gloss1, gloss2 and gloss3 are different)
 
 The percentages of different glosses (Hamming distance) would be 1/4, 2/4 and
 3/4 and the cognacy percentage (or similarity) between the three fictive
-doculects would be 75% ((1-0.25)*100), 50% and 25%. However here missing data
+languages would be 75% ((1-0.25)*100), 50% and 25%. However here missing data
 was counted in the same way as non-cognate forms which is not a sensible
 approach (but which is done by the pre-implemented Hamming metric of pandas).
 It is more appropriate to ommit all pairs with missing data. The distances
