@@ -31,7 +31,8 @@ To install the module, run the following command in the root of the project:
 This downloads and installs the necessary dependencies, and installs the
 `heatmap_dendrogram` script itself.
 
-## Usage
+
+## General usage
 
 Having installed the script, run the following command to view usage
 information:
@@ -64,3 +65,16 @@ Complete usage information for `simulate` can be viewed using the following
 command:
 
     heatmap_dendrogram simulate --help
+    
+## Mini tutorial to reprouce the plots in the paper
+1. Have Python and pip installed on your computer.
+2. Download the "kho-bwa-lexicostat" folder from Github
+3. Unzip
+4. Open a terminal/shell and change to it (e.g. `cd Downloads/kho-bwa-lexicostat`)
+5. Install the module by typing: `pip install --editable .`
+6. Make plots: `heatmap_dendrogram plot` (in the folder ‘plots’)
+7. Simulate disturbed data: `heatmap_dendrogram simulate` (in the folder ‘simulations’)
+
+
+    
+

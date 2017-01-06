@@ -22,6 +22,7 @@ import matplotlib.pyplot as plt
 from scipy.cluster.hierarchy import dendrogram, linkage, fcluster
 import scipy.spatial.distance as pdist
 import click
+click.disable_unicode_literals_warning = True
 
 
 ######################################################################
@@ -31,19 +32,29 @@ The data used for this analysis we had entered into a Google spreadsheet having
 language as columns and glosses and our cognacy statement as rows. Roots which
 we consider as cognate have the same number. Example:
 
-______________________________________________________
-| Gloss\Language|Duhumbi |Khispi |Rupa |Shergaon |...
-|---------------+--------+-------+-----+---------|...
-|HAND           |hut     |hut    |ʔik  |ʔik      |....
-|cognacy        |1       |1      |2    |2        |....
-|---------------|--------+-------+-----+---------+....
-|....
+________________________________________________________
+|Language\Concept  |HAND |cognacy |ASH  |cognacy   |big 
+|------------------+-----+--------+-----+----------+-----
+|Duhumbi           |hut  |       1|     |         1|
+|Khispi            |hut  |       1|  
+|Rupa              |ʔik  |       2|
+|Shergaon          |ʔik  |       2|
+|....              
 |...
+|#Comment1 
+|#Comment2
+
+The table may contain empty rows for visually grouping languages when 
+entering the data.
+
+The table may contain  comment rows in any place, which are excluded 
+from the analysis. The name of a comment row has to start with a hash "#" 
+(like in python).
 
 Where data is missing the cognacy statement is something which is not an
 integer e.g. "NA", "n.a.", "" etc.
 
-The first step is to read the data, extract the cognacy statement, transpose to
+The first step is to read the data, extract the cognacy statement, to
 a nxp multivariate data matrix. In our case the matrix has the dimensions
 29x100, where n = 29 is the number of languages, and p = 100 is the number of
 glosses in the adjusted Leipzig-Jakarta list. Looking something like the
@@ -61,6 +72,7 @@ ___________________________________________
 |Language29     |.
 |___________________________________
 
+
 """
 ######################################################################
 
@@ -68,24 +80,31 @@ ___________________________________________
 def make_datamatrix_from_spreadsheet(infile):
     """
     Takes as imput the google spreadsheet downloaded as csv. Returns a data
-    matrix as rows.
+    matrix.
     """
     # import data as pandas data frame
-    spreadsheet = pd.read_csv(infile)
-    # read only the first 200 lines with the actual data
-    spreadsheet = spreadsheet[:200]
-    # drop all empty columns
-    spreadsheet = spreadsheet.dropna(axis=1, how='all')
+    spreadsheet = pd.read_csv(infile, comment='#', sep=',').dropna(how='all')
+    # drop empty rows and columns
+    #spreadsheet = spreadsheet.dropna(axis=0, how='all')
+    #spreadsheet = spreadsheet.dropna(axis=1, how='all')
     # the first column contains the row names
-    row_names = spreadsheet.iloc[0:200:2, 1]
-    # extract only the odd rows which contain the actual cognacy statement
-    cognacy_matrix = spreadsheet.iloc[1:200:2, 2:31]
+    row_names = spreadsheet.iloc[:, 0]
+    concepts = spreadsheet.columns[1::2]
+    col_names = concepts
+    # extract only the odd colums which contain the actual cognacy judgement
+    cognacy_matrix = spreadsheet.iloc[:, 2::2]
     # exclude an empty column between tb data and khobwa data
     cognacy_matrix.index = row_names
-    # has to be converted to numbers otherwise everything is string, and even
+    cognacy_matrix.columns = col_names
+    # Has to be converted to numbers otherwise everything is string, and even
     # errors coerce make invalid parsing into NaN
-    cognacy_matrix = cognacy_matrix.apply(pd.to_numeric, errors='coerce').T
+    cognacy_matrix = cognacy_matrix.apply(pd.to_numeric, errors='coerce')
     return cognacy_matrix
+
+#infile = 'data/dataset_khobwa.csv'
+
+#bla = make_datamatrix_from_spreadsheet(infile)
+
 
 ######################################################################
 # (2) Compute distance/similarity  matrix
@@ -94,13 +113,13 @@ Every row in cognacy_matrix contains integers (cognacy statement) or "NaN"
 (missing data). As a measure for the distance between two languages, we
 implemented the Hamming metric. The Hamming metric counts the distance between
 two identical integers as 0 and between two not identical integers as 1. If one
-of the two is missing it is also counted as 0. For example if:
+of the two is missing, it is also counted as 0. For example if:
 
-         | gloss1| gloss2| gloss3| gloss4|
----------+-------+-------+-------+-------|
-Language1|     1 |      1|      1| NaN   |
-Language2|     1 |    NaN|      2| 1     |
-Language3|     2 |     2 |      3| 1     |
+         | concept1| concept2| concept3| concept4|
+---------+---------+---------+---------+---------|
+Language1|       1 |       1 |       1 |     NaN |
+Language2|       1 |     NaN |       2 |       1 | 
+Language3|       2 |       2 |       3 |       1 |
 
 then:
 
@@ -160,7 +179,7 @@ def hamming_similarity(data_mat):
 # (3) Perform cluster analysis and plot data
 """
 Hierarchical clusteranalysis with unrounded similarity matrix. The
-preimplemented scipy algorithm was used, which is explained in the paper.
+pre-implemented scipy algorithm was used, which is explained in the paper.
 """
 ######################################################################
 
@@ -261,30 +280,29 @@ def calculate_pairwise_cognacy(infile):
     return hamming_similarity(cognacy_matrix) * 100
 
 
+
 @click.group()
 def cli():
     """ Tool for plotting a comparative word list as heatmap and dendrogram.
 
     Input is a csv file containing rows with the language data and
     a cognacy statement, whether two lexemes are cognate or not.
-
-    Works by default for a word list with 100 lexemes in 29 languages,
-    but can be adjusted for other data sets.
     
-    Input csv (with header line) containing rows with the language data and
-    cognacy statement:
+    Input csv (with header line) containing columns with the language data and
+    cognacy statement.
 
+    Rows in the csv starting with "#" are ignored. This is for including additional
+    information about the concept, the cognacy judgement etc.
+  
     e.g.
 
-    #, Gloss, Duhumbi, Khispi, Rupa, Shergaon
-
-    1, 1SG  , ga     , ga    , gu  , gu
-
-     ,      , 1      , 1     , 1   , 1   
+    Concept  , 1SG , cognacy , HAND, cognacy,\n
+    #POS     , prn ,         ,   n ,        ,\n
+    Duhumbi  , ga  , 1       , hut ,       1,\n
+    Khispi   , ga  , 1       , hut ,       1,\n
+    Rupa     , gu  , 1       , ʔik ,       2,\n
+    Shergaon , gu  , 1       , ʔik ,       2,\n
    
-    2, HAND , hut    , hut   , ʔik , ʔik
-
-     ,      , 1      , 1     , 2   , 2       
     
     """
 
@@ -327,11 +345,11 @@ def plot(outdir, infile, plot_all, plot_part, part_range, linkage):
 @cli.command()
 @click.option('--outdir', type=click.Path(exists=True), default='simulations',
               help='Output directory (Default simulations).')
-@click.option('--count', default=1, help='Number of simulations to run.')
+@click.option('--count', default=1, help='Number of simulations to run. Default 1.')
 @click.option('--distr', type=click.Choice(['uniform', 'binomial']),
               default='uniform', help='Probability distribution.')
-@click.option('--spread', default=20, help='Maximum spread around value.')
-@click.option('--mean', default=0, help='Deviation from value.')
+@click.option('--spread', default=20, help='Maximum spread around value. Default 20.')
+@click.option('--mean', default=0, help='Deviation from value. Default 0.')
 @click.option('--linkage/--no-linkage', default=False,
               help='Show linkage matrix (Default --no-linkage)')
 @click.argument('infile', type=click.Path(exists=True),
@@ -343,7 +361,7 @@ def simulate(outdir, count, distr, spread, mean, infile, linkage):
     introducing random variation. By default, output is written to the
     directory "simulations" in the current directory, and simulations are
     parameterized with spread 20, mean 0, and uniform probability distribution.
-
+   
     Note that 100 simulations can take several minutes to complete.
     """
     pairwise_cognacy = calculate_pairwise_cognacy(infile)
