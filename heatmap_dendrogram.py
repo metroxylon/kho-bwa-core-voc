@@ -27,7 +27,7 @@ click.disable_unicode_literals_warning = True
 
 ######################################################################
 # (1) Prepare spreadsheet data - convert to nxp matrix (dataframe)
-r"""
+"""
 The data used for this analysis we had entered into a Google spreadsheet having
 language as columns and glosses and our cognacy statement as rows. Roots which
 we consider as cognate have the same number. Example:
