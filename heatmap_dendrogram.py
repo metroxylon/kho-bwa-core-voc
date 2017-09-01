@@ -1,8 +1,6 @@
 """
-***DRAFT***
 This script contains the computing done for the paper “Kho-Bwa: A
-lexico-statistical study” to appear in 2017. The author of the script is not a
-programmer. Suggestions for improvement are welcome.
+lexico-statistical study” to appear end of 2017 in Himalayan Linguistics 16.2. 
 ***
 Script...
 (1) reads from a csv spread sheet with cognacy judgements
@@ -11,19 +9,18 @@ Script...
 (4) performs simulations with slightly disturbed data.
 Runs with Python 3.
 """
-# import modules
-import time  # not really necessary, just for tracking time
-
+# import scientific modules
+import time 
 import pandas as pd
 import numpy as np
 import seaborn as sns
 import matplotlib.pyplot as plt
+
 # import scipy
 from scipy.cluster.hierarchy import dendrogram, linkage, fcluster
 import scipy.spatial.distance as pdist
 import click
 click.disable_unicode_literals_warning = True
-
 
 ######################################################################
 # (1) Prepare spreadsheet data - convert to nxp matrix (dataframe)
