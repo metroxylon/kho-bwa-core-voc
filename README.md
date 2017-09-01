@@ -79,11 +79,11 @@ command:
     
 ## Mini tutorial for reproducing the plots in the paper
 1. Have Python and pip installed.
-2. Download the ‘subgrouping-kho-bwa’ directory from Github by clicking on the green button `Clone or download' (or clone the directory)
+2. Download the ‘subgrouping-kho-bwa’ directory from Github by clicking on the green button `Clone or download` (or clone the directory)
 3. Open a terminal/shell and navigate to the folder (e.g. `cd Downloads/subgrouping-kho-bwa-master`)
 4. Install the module by typing: `pip3 install --editable .`
-5. Make plots: `heatmap_dendrogram plot` (in the folder [plots][])
-6. Simulate disturbed data: `heatmap_dendrogram simulate` (in the folder [simulations][])
+5. Make plots: `heatmap_dendrogram plot` (result in folder [plots][])
+6. Simulate disturbed data: `heatmap_dendrogram simulate` (result in folder [simulations][])
 
 
     
