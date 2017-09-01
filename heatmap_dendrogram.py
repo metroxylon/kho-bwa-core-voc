@@ -1,5 +1,5 @@
 """
-This script contains the computing for the paper “Sub-grouping Kho-Bwa based on 
+This script performs the computations for the paper “Sub-grouping Kho-Bwa based on 
 shared core vocabulary” by Ismael Lieberherr and Timotheus A. Bodt to appear end 
 of 2017 in Himalayan Linguistics 16.2. 
 ***

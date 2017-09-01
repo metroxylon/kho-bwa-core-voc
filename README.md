@@ -1,7 +1,8 @@
 # Heatmap and dendrogram tool
 
-TODO This is the tool used for creating heatmap and dendrogram plots in a
-lexico-statistical study of Kho-Bwa languages.
+This script performs the computations for the paper “Sub-grouping Kho-Bwa based on 
+shared core vocabulary” by Ismael Lieberherr and Timotheus A. Bodt to appear end 
+of 2017 in Himalayan Linguistics 16.2. 
 
 ## Requirements
 
