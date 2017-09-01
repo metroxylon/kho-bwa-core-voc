@@ -1,6 +1,7 @@
 """
-This script contains the computing done for the paper “Kho-Bwa: A
-lexico-statistical study” to appear end of 2017 in Himalayan Linguistics 16.2. 
+This script contains the computing for the paper “Sub-grouping Kho-Bwa based on 
+shared core vocabulary” by Ismael Lieberherr and Timotheus A. Bodt to appear end 
+of 2017 in Himalayan Linguistics 16.2. 
 ***
 Script...
 (1) reads from a csv spread sheet with cognacy judgements
