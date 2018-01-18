@@ -2,8 +2,8 @@
 
 This script [heatmap_dendrogram.py][] performs the computations for
 the paper “Sub-grouping Kho-Bwa based on shared core vocabulary” by
-Ismael Lieberherr and Timotheus A. Bodt 2017, [hl-paper][Himalayan
-Linguistics 16.2]. The data is in the folder [data][], the resulting
+Ismael Lieberherr and Timotheus A. Bodt 2017, [Himalayan
+Linguistics 16.2][]. The data is in the folder [data][], the resulting
 plots in the folder [plots][] and [simulations][], a short write-up of
 the cluster analysis in the folder [writeup][].
 
@@ -13,7 +13,7 @@ the cluster analysis in the folder [writeup][].
 [plots]: ./plots/
 [simulations]: ./simulations/
 [writeup]: ./writeup/writeup-cluster-analysis.pdf
-[hl-paper]: https://escholarship.org/uc/item/4t27h5fg
+[Himalayan Linguistics 16.2]: https://escholarship.org/uc/item/4t27h5fg
 
 ## Requirements
 
