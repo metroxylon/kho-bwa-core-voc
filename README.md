@@ -2,10 +2,10 @@
 
 This script [heatmap_dendrogram.py][] performs the computations for
 the paper “Sub-grouping Kho-Bwa based on shared core vocabulary” by
-Ismael Lieberherr and Timotheus A. Bodt to appear end of 2017 in
-Himalayan Linguistics 16.2. The data is in the folder [data][], the
-resulting plots in the folder [plots][] and [simulations], a short
-write-up of the cluster analysis in the folder [writeup][].
+Ismael Lieberherr and Timotheus A. Bodt 2017, [hl-paper][Himalayan
+Linguistics 16.2]. The data is in the folder [data][], the resulting
+plots in the folder [plots][] and [simulations], a short write-up of
+the cluster analysis in the folder [writeup][].
 
 
 [heatmap_dendrogram.py]: ./heatmap_dendrogram.py
@@ -13,6 +13,7 @@ write-up of the cluster analysis in the folder [writeup][].
 [plots]: ./plots/
 [simulations]: ./simulations/
 [writeup]: ./writeup/writeup-cluster-analysis.pdf
+[hl-paper]: https://escholarship.org/uc/item/4t27h5fg
 
 ## Requirements
 
@@ -76,7 +77,7 @@ Complete usage information for `simulate` can be viewed using the following
 command:
 
     heatmap_dendrogram simulate --help
-    
+
 ## Mini tutorial for reproducing the plots in the paper
 1. Have Python and pip installed.
 2. Download the ‘subgrouping-kho-bwa’ directory from Github by clicking on the green button `Clone or download`, unzip (alternatively clone the directory)
@@ -84,7 +85,3 @@ command:
 4. Install the module by typing: `pip3 install --editable .`
 5. Make plots: `heatmap_dendrogram plot` (result in folder [plots][])
 6. Simulate disturbed data: `heatmap_dendrogram simulate` (result in folder [simulations][])
-
-
-    
-
